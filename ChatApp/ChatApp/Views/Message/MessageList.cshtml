@@ -1,0 +1,123 @@
+﻿@model IEnumerable<ChatApp.Models.RecipientMessageHistoryModel>
+@{
+    ViewData["Title"] = "MessageList";
+    var userSearchResultsData = ViewData["UserSearchResultData"] as IEnumerable<ChatApp.Models.UserModel>;
+}
+
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-1 icon">
+        <i style="font-size: 70px" class="material-icons">mail_outline</i>
+    </div>
+    <div class="col-md-4">
+        <h1 class="display-4">Message List</h1>
+    </div>
+</div>
+<hr />
+<form method="post" asp-action="MessageList">
+    <div id="divSearch">
+        <div class="row">
+                <div class="col-md-4">
+                    <input Id="search" name="search" class="form-control" type="text" placeholder="Start typing to search by recipient" />
+                </div>
+                <div class="col-md-2">
+                    <input type="submit" name="SearchButton" value="Search" class="btn btn-block btn-info" />
+                </div>
+            </div>
+        </div>
+        <br />
+        @if (userSearchResultsData != null)
+        {
+            <h3 class="text-center">Results From Search</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr class="modal-col-blue-grey">
+                        <th style="width: 5%"></th>
+                        <th>User</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @try
+                    {
+                        @foreach (var users in userSearchResultsData)
+                        {
+                            <tr>
+                                <td><a asp-action="Messages" asp-route-recipient="@users.name" title="View/Send Messages"><i class="material-icons md-30">mail_outline</i></a></td>
+                                <td>@users.name</td>
+                            </tr>
+                        }
+                    }
+                    catch
+                    {
+                        <tr>No Data Found.</tr>
+                    }
+                </tbody>
+            </table>
+            <hr />
+        }
+</form>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">Message History With Recipients</h3>
+        @if (Model.Any())
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr class="modal-col-blue-grey">
+                        <th style="width: 5%"></th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.recipient)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="Messages" asp-route-recipient="@item.recipient" title="View/Send Messages"><i class="material-icons md-30">mail_outline</i></a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.recipient)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <b>No recipients found in message history</b>
+        }
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#search").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Message/GetUsers",
+                        type: "POST",
+                        dataType: "json",
+                        data: { username: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.name, value: item.name };
+                            }));
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error retrieving data for auto-complete.');
+                }
+            });
+        })
+    </script>
+}
+
+

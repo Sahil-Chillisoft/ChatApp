@@ -3,3 +3,6 @@
 ################################################################################
 
 /ChatApp/.vs/ChatApp/v16
+/ChatApp/.vs/ChatApp
+/ChatApp/ChatApp/bin/Debug/netcoreapp3.1
+/ChatApp/ChatApp/obj

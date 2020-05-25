@@ -1,0 +1,53 @@
+﻿@model ChatApp.Models.MessageModel
+@{
+    ViewData["Title"] = "Messages";
+    var channelMessages = ViewData["ChannelMessages"] as IEnumerable<ChatApp.Models.MessageModel>;
+}
+
+<h1 class="text-center">Messages In Channel @Context.Request.Query["channel"]</h1>
+<hr />
+<form method="post" asp-action="SendMessage">
+    <div class="row">
+        <div class="col-md-12">
+            @if (channelMessages.Any())
+            {
+                <table class="table">
+                    <tbody>
+                        @foreach (var item in channelMessages)
+                        {
+                            <tr>
+                                <td><label>@item.author: @item.message - @item.date</label></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <b>No previous messages found with recipient.</b>
+            }
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.message, new { style = "width:100%", placeholder = "Enter Message..." })
+        </div>
+        <div class="col-md-2">
+            <input type="submit" class="btn btn-info" value="Send" style="width: 100%" onclick="validateMessage(event)" />
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script>
+        function validateMessage(event) {
+            var message = $("#message").val();
+            if (message === "" || message === null) {
+                alert('Please enter a message before attempting to send.');
+                event.preventDefault();
+            }
+        }
+    </script>
+}

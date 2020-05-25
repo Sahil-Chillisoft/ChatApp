@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "ChatApp";
+}
+
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-1 icon">
+        <i style="font-size: 70px" class="material-icons">vertical_split</i>
+    </div>
+    <div class="col-md-4">
+        <h1 class="display-4">Dashboard</h1>
+    </div>
+</div>
+
+<br />
+
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-4">
+        <div id="divMessages" title="View & Send Direct Messages" onclick="Navigate(id)">
+            <div class="info-box bg-limegreen hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">mail_outline</i>
+                </div>
+                <div class="content">
+                    <div style="font-size:20px">Messages</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-4">
+        <div id="divChannels" title="View & Send Messages On Channels" onclick="Navigate(id)">
+            <div class="info-box bg-blue hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">cast</i>
+                </div>
+                <div class="content">
+                    <div style="font-size:20px">Channels</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        function Navigate(id) {
+            switch (id) {
+            case 'divMessages':
+                window.location.href = 'Message/MessageList';
+                break;
+            case 'divChannels':
+                window.location.href = 'Channel/ChannelList';
+                break;
+            }
+        }
+    </script>    
+}

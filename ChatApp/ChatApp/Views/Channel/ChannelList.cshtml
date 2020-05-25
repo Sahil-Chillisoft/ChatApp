@@ -1,0 +1,124 @@
+﻿@model IEnumerable<ChatApp.Models.RecipientMessageHistoryModel>
+@{
+    ViewData["Title"] = "ChannelList";
+    var channelSearchData = ViewData["channelSearchData"] as IEnumerable<ChatApp.Models.ChannelModel>;
+}
+
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-1 icon">
+        <i style="font-size: 70px" class="material-icons">cast</i>
+    </div>
+    <div class="col-md-4">
+        <h1 class="display-4">Channel List</h1>
+    </div>
+</div>
+
+<hr />
+
+<form method="post">
+    <div id="divSearch">
+        <div class="row">
+            <div class="col-md-4">
+                <input Id="search" name="search" class="form-control" type="text" placeholder="Start typing to search for a channnel" />
+            </div>
+            <div class="col-md-2">
+                <input type="submit" name="SearchButton" value="Search" class="btn btn-block btn-info" />
+            </div>
+        </div>
+    </div>
+    <br />
+    @if (channelSearchData != null)
+    {
+        <h3 class="text-center">Results From Search</h3>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr class="modal-col-blue-grey">
+                    <th style="width: 5%"></th>
+                    <th>Channel</th>
+                </tr>
+            </thead>
+            <tbody>
+                @try
+                {
+                    @foreach (var channel in channelSearchData)
+                    {
+                        <tr>
+                            <td><a asp-action="Messages" asp-route-channel="@channel.name" title="View/Send Messages"><i class="material-icons md-30">mail_outline</i></a></td>
+                            <td>@channel.name</td>
+                        </tr>
+                    }
+                }
+                catch
+                {
+                    <tr>No Data Found.</tr>
+                }
+            </tbody>
+        </table>
+        <br />
+    }
+</form>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">Message History With Channels</h3>
+        @if (Model.Any())
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr class="modal-col-blue-grey">
+                        <th style="width: 5%"></th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.recipient)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="Messages" asp-route-channel="@item.recipient" title="View/Send Messages To Channel"><i class="material-icons md-30">mail_outline</i></a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.recipient)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <b>No channels found in message history.</b>
+        }
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#search").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Channel/GetChannels",
+                        type: "POST",
+                        dataType: "json",
+                        data: { username: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.name, value: item.name };
+                            }));
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error retrieving data for auto-complete.');
+                }
+            });
+        })
+    </script>
+}
+

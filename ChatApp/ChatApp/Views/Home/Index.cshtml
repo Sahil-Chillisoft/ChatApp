@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Login Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome To Chat App</h1>
+</div>
+
+<form asp-action="Login">
+    <div class="row md-Padding-Top-100">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="username" class="username-input" placeholder="Enter Username" />
+            @if (ViewBag.ValidationMessage != null)
+            {
+                <br/>
+                <label class="text-danger">@ViewBag.ValidationMessage.ToString()</label>
+            }
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <button class="login-button">Login</button>
+        </div>
+    </div>
+</form>
